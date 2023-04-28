@@ -3,7 +3,7 @@ import { Friends, Search, User } from "./";
 
 const Sidebar = () => {
   return (
-    <div className="flex flex-col px-6 py-10 gap-8">
+    <div className="flex flex-col px-6 py-8 gap-6">
         <div>
           <User />
         </div>
