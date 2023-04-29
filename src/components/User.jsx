@@ -1,5 +1,5 @@
 import React, { useContext } from "react";
-import { PencilIcon } from "@heroicons/react/24/outline";
+import { ArrowLeftOnRectangleIcon } from "@heroicons/react/24/outline";
 import { signOut } from "firebase/auth";
 import { auth } from "../firebase";
 import { AuthContext } from "../context/AuthContext";
@@ -15,11 +15,10 @@ const User = () => {
         </div>
         <div>
           <h3 className="text-[#4A79F7] text-xl font-semibold font-mono leading-6">{contextData?.displayName}</h3>
-          {/* <p className="text-[#929292] font-mono text-sm">Senior Developer</p> */}
         </div>
       </div>
       <div>
-        <PencilIcon className="h-5 w-5 cursor-pointer" onClick={() => signOut(auth)} />
+        <ArrowLeftOnRectangleIcon className="h-6 w-6 cursor-pointer" onClick={() => signOut(auth)} />
       </div>
     </div>
   );
