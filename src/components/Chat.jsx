@@ -1,12 +1,12 @@
 import React from 'react'
-import { ChatBox, Message, Profile } from './'
+import { ChatBox, MessageInput, SmallProfile } from './'
 
 const Chat = () => {
   return (
-    <div>
-      <Profile />
+    <div className='flex flex-col gap-2 px-3 py-5 justify-between h-screen'>
+      <SmallProfile />
       <ChatBox />
-      <Message />
+      <MessageInput />
     </div>
   )
 }
