@@ -1,6 +1,59 @@
-import React from "react";
+import React, { useState } from "react";
+import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
+import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
+import { auth, storage, db } from '../firebase'
+import { doc, setDoc } from "firebase/firestore";
+import { PhotoIcon } from "@heroicons/react/24/outline";
+import { useNavigate, Link } from "react-router-dom";
 
 const Register = () => {
+  const [err, setErr] = useState(false)
+  const navigate = useNavigate()
+
+  const handleSubmit = async (e) => {
+    e.preventDefault()
+
+    const firstName = e.target[0].value
+    const lastName = e.target[1].value
+    const fullName = firstName + " " + lastName
+    const email = e.target[2].value
+    const password = e.target[3].value
+    const file = e.target[4].files[0]
+
+    try {
+      const res = await createUserWithEmailAndPassword(auth, email, password)
+      const storageRef = ref(storage, fullName);
+      const uploadTask = uploadBytesResumable(storageRef, file);
+
+      uploadTask.on('state_changed',
+        (snapshot) => {
+
+        },
+        (error) => {
+          setErr(true)
+        },
+        () => {
+          getDownloadURL(uploadTask.snapshot.ref).then(async (downloadURL) => {
+            await updateProfile(res.user, {
+              displayName: fullName,
+              photoURL: downloadURL
+            })
+            await setDoc(doc(db, "users", res.user.uid), {
+              uid: res.user.uid,
+              displayName: fullName,
+              email,
+              photoURL: downloadURL,
+            })
+            await setDoc(doc(db, "usersChat", res.user.uid), {})
+            navigate('/')
+          });
+        }
+      )
+    } catch (error) {
+      setErr(true)
+    }
+  }
+
   return (
     <div>
       <div className="font-mono bg-gray-400 h-screen flex items-center justify-center">
@@ -12,7 +65,7 @@ const Register = () => {
                 <h3 className="pt-4 text-2xl text-center">
                   Create an Account!
                 </h3>
-                <form className="px-8 pt-6 pb-8 mb-4 bg-white rounded">
+                <form className="px-8 pt-6 pb-8 mb-4 bg-white rounded" onSubmit={handleSubmit}>
                   <div className="mb-4 md:flex md:justify-between">
                     <div className="mb-4 md:mr-2 md:mb-0">
                       <label
@@ -72,45 +125,40 @@ const Register = () => {
                         placeholder="******************"
                       />
                     </div>
-                    <div className="md:ml-2">
+                    <div className="md:ml-2 flex items-end justify-center pb-2">
                       <label
-                        className="block mb-2 text-sm font-bold text-gray-700"
-                        htmlFor="c_password"
+                        className="mb-2 text-sm font-bold text-gray-700 flex items-center justify-center gap-2 cursor-pointer"
+                        htmlFor="image_file"
                       >
-                        Confirm Password
+                        <PhotoIcon className="h-10 w-10" />
+                        Add an Avatar
                       </label>
                       <input
-                        className="w-full px-3 py-2 mb-3 text-sm leading-tight text-gray-700 border rounded shadow appearance-none focus:outline-none focus:shadow-outline"
-                        id="c_password"
-                        type="password"
-                        placeholder="******************"
+                        className="hidden"
+                        id="image_file"
+                        type="file"
                       />
                     </div>
                   </div>
                   <div className="mb-6 text-center">
                     <button
                       className="w-full px-4 py-2 font-bold text-white bg-blue-500 rounded-full hover:bg-blue-700 focus:outline-none focus:shadow-outline"
-                      type="button"
+                      type="submit"
                     >
                       Register Account
                     </button>
                   </div>
+                  {err && (<div className="text-center text-red-600">Something went wrong</div>)}
                   <hr className="mb-6 border-t" />
                   <div className="text-center">
-                    <a
-                      className="inline-block text-sm text-blue-500 align-baseline hover:text-blue-800"
-                      href="/forgot-password"
-                    >
+                    <Link to='/forget-password' className="inline-block text-sm text-blue-500 align-baseline hover:text-blue-800">
                       Forgot Password?
-                    </a>
+                    </Link>
                   </div>
                   <div className="text-center">
-                    <a
-                      className="inline-block text-sm text-blue-500 align-baseline hover:text-blue-800"
-                      href="/login"
-                    >
+                    <Link to='/login' className="inline-block text-sm text-blue-500 align-baseline hover:text-blue-800">
                       Already have an account? Login!
-                    </a>
+                    </Link>
                   </div>
                 </form>
               </div>

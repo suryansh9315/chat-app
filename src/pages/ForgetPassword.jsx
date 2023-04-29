@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 
 const ForgetPassword = () => {
   return (
@@ -41,20 +42,14 @@ const ForgetPassword = () => {
                   </div>
                   <hr className="mb-6 border-t" />
                   <div className="text-center">
-                    <a
-                      className="inline-block text-sm text-blue-500 align-baseline hover:text-blue-800"
-                      href="./register"
-                    >
+                    <Link to='/register' className="inline-block text-sm text-blue-500 align-baseline hover:text-blue-800">
                       Create an Account!
-                    </a>
+                    </Link>
                   </div>
                   <div className="text-center">
-                    <a
-                      className="inline-block text-sm text-blue-500 align-baseline hover:text-blue-800"
-                      href="./login"
-                    >
+                    <Link to='/login' className="inline-block text-sm text-blue-500 align-baseline hover:text-blue-800">
                       Already have an account? Login!
-                    </a>
+                    </Link>
                   </div>
                 </form>
               </div>

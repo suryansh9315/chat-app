@@ -1,18 +1,25 @@
-import React from "react";
+import React, { useContext } from "react";
 import { PencilIcon } from "@heroicons/react/24/outline";
+import { signOut } from "firebase/auth";
+import { auth } from "../firebase";
+import { AuthContext } from "../context/AuthContext";
 
 const User = () => {
+  const contextData = useContext(AuthContext)
+
   return (
     <div className="flex justify-between items-center">
-      <div className="flex gap-5 items-center">
-        <div className="h-[80px] w-[80px] bg-cover rounded-full bg-login-image"></div>
+      <div className="flex gap-4 items-center">
+        <div className="h-[80px] w-[80px] rounded-full">
+          <img src={contextData?.photoURL} alt="" className="rounded-full h-[80px] w-[80px] object-cover" />
+        </div>
         <div>
-          <h3 className="text-[#4A79F7] text-xl font-semibold font-mono leading-6">Suryansh Sharma</h3>
-          <p className="text-[#929292] font-mono text-sm">Senior Developer</p>
+          <h3 className="text-[#4A79F7] text-xl font-semibold font-mono leading-6">{contextData?.displayName}</h3>
+          {/* <p className="text-[#929292] font-mono text-sm">Senior Developer</p> */}
         </div>
       </div>
       <div>
-        <PencilIcon className="h-5 w-5 cursor-pointer" />
+        <PencilIcon className="h-5 w-5 cursor-pointer" onClick={() => signOut(auth)} />
       </div>
     </div>
   );
